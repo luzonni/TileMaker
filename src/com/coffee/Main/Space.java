@@ -2,19 +2,19 @@ package com.coffee.Main;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Desktop;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 
 import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-import com.coffee.Main.Map.Map;
 import com.coffee.Main.System.Floor;
 import com.coffee.Main.System.Wall;
 import com.coffee.Main.Tools.FontG;
@@ -28,16 +28,15 @@ public class Space {
 	private static final String sourcePath = "/com/coffee/res/Sources/";
 	
 	private static BufferedImage Compose;
-	private static BufferedImage[] Sprite;
+	private static BufferedImage Sprite;
 	private static String tileComposePath = "D:/Arquivos/My Project/Tools/TilesComposes";
 	private static String SpriteNameSave;
 	
-	private static TileType tileType = TileType.Block;
+	private TileType tileType = TileType.Block;
 	
 	public Space() {
 		Width = Gears.window.getWidth();
 		Height = Gears.window.getHeight();
-		Sprite = new BufferedImage[2];
 	}
 	
 	public void tick() {
@@ -54,20 +53,21 @@ public class Space {
 			Gears.window.frame.setLocation(Mouse.getScreenX(), Mouse.getScreenY());
 		}
 		//Change Map
-		if(Button("Map", Width - HorizontalPer(24.5f), VertivalPer(2f), 3, g)) {
-			String type = JOptionPane.showInputDialog("Type: [Floor , Wall]");
-			if(type != null && (type.equals("Wall") ^ type.equals("Floor")))
-				new Map(type);
+		if(Button("Help", Width - HorizontalPer(26f), VertivalPer(2f), 3, g)) {
+			try {
+	            // Verifica se a classe Desktop é suportada pelo sistema
+	            if (Desktop.isDesktopSupported()) {
+	                Desktop desktop = Desktop.getDesktop();
+	                
+	                // Verifica se é possível abrir URLs
+	                if (desktop.isSupported(Desktop.Action.BROWSE)) {
+	                    desktop.browse(new URI("https://github.com/luzonni/TileMaker"));
+	                }
+	            }
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	        }
 		}
-		//Type
-		if(Button("Type", HorizontalPer(15f), VertivalPer(7f), 3, g)) {
-			if(tileType.equals(TileType.Block)) {
-				tileType = TileType.Wall;
-			}else {
-				tileType = TileType.Block;
-			}
-		}
-		Text("Type: "+tileType.name(), HorizontalPer(2f), VertivalPer(16.5f), 22, g);
 		//Import
 		if(tileComposePath != null)
 			Text("Source Compose: "+tileComposePath, HorizontalPer(2f), VertivalPer(13.5f), 18, g);
@@ -82,10 +82,21 @@ public class Space {
 					Compose = ImageIO.read(chooser.getSelectedFile().getAbsoluteFile());
 				} catch (IOException e) {}
 				tileComposePath = chooser.getSelectedFile().getAbsolutePath();
-				Floor floor = new Floor(Compose);
-				Sprite[0] = floor.getSprite();
-				Wall wall = new Wall(Compose);
-				Sprite[1] = wall.getSprite();
+				
+				if(Compose.getWidth() == 48 && Compose.getHeight() == 56) {
+					this.tileType = TileType.Block;
+					Floor floor = new Floor(Compose);
+					Sprite = floor.getSprite();
+				}else {
+					
+				}
+				if(Compose.getWidth() == 48 && Compose.getHeight() == 80) {
+					this.tileType = TileType.Wall;
+					Wall wall = new Wall(Compose);
+					Sprite = wall.getSprite();
+				}else {
+					
+				}
 			}
 		}
 		//Save
@@ -93,7 +104,7 @@ public class Space {
 			File iconFile = new File(SpriteNameSave);
 			File f = new File(iconFile.getPath());
 		    try {
-				ImageIO.write(Sprite[1], "png", f);
+				ImageIO.write(Sprite, "png", f);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -114,13 +125,13 @@ public class Space {
 		//Image
 		Image(Compose, HorizontalPer(2f), VertivalPer(20.5f), 5, g);
 		//Tiles
-		if(Sprite[tileType.getIndex()] != null) {
+		if(Sprite != null) {
 			int index = 0;
 			int x = 0;
 			int y = 0;
-			while(index*16 < Sprite[0].getWidth()) {
+			while(index*16 < Sprite.getWidth()) {
 				if(tileType.equals(TileType.Block)) {
-					Image(Sprite[0].getSubimage(index*16, 0, 16, Sprite[0].getHeight()), HorizontalPer(30.5f+(x*6)), VertivalPer(20.5f+(y*10.5f)), 3, g);
+					Image(Sprite.getSubimage(index*16, 0, 16, Sprite.getHeight()), HorizontalPer(30.5f+(x*6)), VertivalPer(20.5f+(y*10.5f)), 3, g);
 					index++;
 					x++;
 					if(x > 10) {
@@ -128,7 +139,7 @@ public class Space {
 						y++;
 					}
 				}else {
-					Image(Sprite[1].getSubimage(index*16, 0, 16, Sprite[1].getHeight()), HorizontalPer(29.5f+(x*4)), VertivalPer(20.5f+(y*13f)), 2, g);
+					Image(Sprite.getSubimage(index*16, 0, 16, Sprite.getHeight()), HorizontalPer(29.5f+(x*4)), VertivalPer(20.5f+(y*13f)), 2, g);
 					index++;
 					x++;
 					if(x > 16) {

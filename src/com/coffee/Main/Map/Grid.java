@@ -13,6 +13,7 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
 
+import com.coffee.Main.TileType;
 import com.coffee.Main.Tools.Mouse;
 
 public class Grid {
@@ -25,7 +26,7 @@ public class Grid {
 	
 	public int CurIndex = 0;
 	
-	public String type = "Search";
+	public TileType type = TileType.Block;
 	public int padding;
 	public int W_I = 0;
 	public int H_I = 0;
@@ -36,26 +37,21 @@ public class Grid {
 	private int Width;
 	private int Height;
 	
-	public Grid(String type, int Width, int Height) {
+	public Grid(TileType type, int Width, int Height) {
 		this.Width = Width;
 		this.Height = Height;
 		padding = 6*Map.Scale;
-		if(!type.equals("Floor") && !type.equals("Wall")) {
-			JOptionPane.showMessageDialog(null, "Invalid name");
-			System.exit(1);
-			return;
-		}
 		BufferedImage image = null;
 		try {
-			image = ImageIO.read(getClass().getResource("/com/coffee/res/Templates/"+type+".png"));
+			image = ImageIO.read(getClass().getResource("/com/coffee/res/Templates/"+type.getName()+".png"));
 		} catch (IOException e) {
 			return;
 		}
 		Chunks = getChunks(image);
-		if(type.equals("Floor")) {
+		if(type.equals(TileType.Block)) {
 			W_G = 2;
 			H_G = 3;
-		}else if(type.equals("Wall")) {
+		}else if(type.equals(TileType.Wall)) {
 			W_G = 2;
 			H_G = 6;
 		}	

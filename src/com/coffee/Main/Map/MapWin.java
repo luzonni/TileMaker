@@ -44,9 +44,10 @@ public class MapWin extends Canvas {
 	}
 
 	public void initFrame() {
-		frame = new JFrame("Cobrinha");
+		frame = new JFrame("Mapa");
 		frame.add(this);
 		this.setPreferredSize(new Dimension(Width, Height));
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.pack();
 		frame.setLocationRelativeTo(null);
 		frame.setResizable(false);

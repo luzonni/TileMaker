@@ -98,7 +98,6 @@ public class Gears implements Runnable {
 					delta_FPS--;
 				}
 				if(System.currentTimeMillis() - timer >= 1000){
-//					Engine.window.getFrame().setTitle(Engine.GameTag+" - Hz: " + Hz + " / Frames: " + frames);
 					FRAMES = frames;
 					frames = 0;
 					HERTZ = Hz;

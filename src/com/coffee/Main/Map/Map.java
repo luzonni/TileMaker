@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferStrategy;
 
+import com.coffee.Main.TileType;
+
 public class Map implements Runnable {
 	
 	public boolean isRunning = true;
@@ -18,14 +20,14 @@ public class Map implements Runnable {
 	
 	public static int Scale = 8;
 	
-	public Map(String type) {
+	public Map(TileType type) {
 		window = new MapWin(800, 800);
 		grid = new Grid(type, window.getWidth(), window.getHeight());
 		start();
 	}
 	
 	public static void main(String[] args) {
-		new Map("Wall");
+		new Map(TileType.Block);
 	}
 	
 	public MapWin getWindow() {
